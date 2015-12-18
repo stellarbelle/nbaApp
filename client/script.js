@@ -8,6 +8,9 @@
       .when('/show/:_id',{
         templateUrl: 'partials/edit.html'
       })
+      .when('/teams',{
+        templateUrl: 'partials/teams.html'
+      })
       .otherwise({
         redirectTo: '/players'
       });
@@ -17,8 +20,8 @@
     nbaApp.factory('playerFactory', function($http) {
 
       var positions = ["point guard", "shooting guard", "center", "small forward", 
-                       "power forward", "utility"];
-
+                       "power forward"];
+      var players = [];
       var factory = {};
 
       factory.createPlayer = function(player, callback) {
@@ -33,8 +36,16 @@
       },
 
       factory.getPlayers = function(callback) {
-        $http.get('/showPlayers').success(function(players) {
+        $http.get('/showPlayers').success(function(data) {
+          var dt = new Date();
+          dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+          for (player in data) {
+            if (data[player].date === dt) {
+              players.push(data[player]);
+            }
+          }
           callback(players);
+          players = [];
         })
       },
       factory.showPlayer = function(id, callback) {
@@ -70,13 +81,7 @@
       });
 
       playerFactory.getPlayers(function (players) {
-        var dt = new Date();
-        dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-        for (player in players) {
-          if (players[player].date === dt) {
-            $scope.players.push(players[player]);
-          }
-        }
+        $scope.players = players
       });
 
       $scope.createPlayer = function() {
@@ -124,5 +129,96 @@
           $location.path('/players');
         })
       }
+
+    });
+
+
+    nbaApp.controller('teamsController', function ($location, $scope, playerFactory) {
+
+      $scope.players = [];
+      var pointGuard = [], shootingGuard = [], smallForward = [], powerForward = [], center = [], guard = [], forward = [], utility = [];
+
+      function createTeams() {
+        var teams = [], arg = arguments, max = arg.length-1;
+        function helper(arr, i) {
+            for (var j=0, l=arg[i].length; j<l; j++) {
+                var newTeam = arr.slice(0); // clone arr
+                newTeam.push(arg[i][j])
+                if (i==max) {
+                    teams.push(newTeam);
+                } else
+                    helper(newTeam, i+1);
+            }
+        }
+        helper([], 0);
+        return teams;
+      };
+
+      function checkSalaryAndDupes(data, salaryCap) {
+        var indices = [];
+        var teams = data;
+        teamLoop:
+        for (var i = 0; i < teams.length; i++) {
+          var team = teams[i]
+          playerLoop:
+          for (var j = 0; j < team.length; j++) {
+            var salarySum = team[j].salary;
+            playerCheckLoop:
+            for (var k = j+1; k < team.length; k++) {
+              salarySum += team[k].salary;
+              if (team[j].name === team[k].name) {
+                indices.push(i);
+                break playerLoop;
+              } 
+              else if (salarySum > salaryCap) {
+                indices.push(i);
+                break playerLoop;
+              }
+            }
+          }
+        }
+        console.log(indices)
+        for (var s = indices.length - 1; s >= 0; s--) {
+          teams.splice(indices[s], 1);
+        }
+        return teams
+      };
+
+      playerFactory.getPlayers(function (players) {
+        $scope.players = players;
+        for (player in players) {
+          if (players[player].position == "point guard") {
+            pointGuard.push(players[player]);
+            guard.push(players[player]);
+            utility.push(players[player]);
+          } else if (players[player].position == "shooting guard") {
+            shootingGuard.push(players[player]);
+            guard.push(players[player]);
+            utility.push(players[player]);
+          } else if (players[player].position == "small forward") {
+            smallForward.push(players[player]);
+            forward.push(players[player]);
+            utility.push(players[player]);
+          } else if (players[player].position == "power forward") {
+            powerForward.push(players[player]);
+            forward.push(players[player]);
+            utility.push(players[player]);
+          } else if (players[player].position == "center") {
+            center.push(players[player]);
+            utility.push(players[player]);
+          }          
+        }
+        // var allPlayers = [pointGuard, shootingGuard];
+        var allTeams = createTeams(pointGuard, shootingGuard, powerForward, smallForward, center, guard, forward, utility);
+        $scope.teams = checkSalaryAndDupes(allTeams, 50000)
+        console.log("Good: ", $scope.teams);
+      });
+
+
+      /* (players, salaryCap, positions) */
+      /* [["point guard"], ["shooting guard"], ["small forward"], ["power forward"], ["center"],
+          ["point guard", "shooting guard"], ["small forward", "power forward"], 
+          ["point guard", "shooting guard", "small forward", "power forward", "center"]] */
+
 
     });
