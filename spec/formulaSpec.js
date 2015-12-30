@@ -37,7 +37,7 @@ describe("creating teams from players", function () {
         var players = [
             {
                 "name": "player a",
-                "position": "position a",
+                "job": "position a",
                 "salary": 50
             }
         ];
@@ -56,11 +56,11 @@ describe("creating teams from players", function () {
         var players = [
             {
                 "name": "player a",
-                "position": "position a",
+                "job": "position a",
                 "salary": 50
             }, {
                 "name": "player b",
-                "position": "position b",
+                "job": "position b",
                 "salary": 60
             }
         ];

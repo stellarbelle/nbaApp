@@ -1,5 +1,6 @@
 <div ng-controller="teamsController">
 	<h1>Here are your teams for today!</h1>
+	<br>
 	<div ng-repeat="team in teams">
 		<div ng-repeat="player in team">
 			<p>{{ player.name }}, {{ player.position }}, {{ player.salary }}</p>
