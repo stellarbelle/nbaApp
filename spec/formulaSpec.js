@@ -76,5 +76,50 @@ describe("creating teams from players", function () {
         expect(results[0]["first"]).toBe(players[0]);
         expect(results[0]["second"]).toBe(players[1]);
         expect(results[0].totalSalary).toBe(110);
-    })
+    });
+
+    it("handles multiple jobs per position", function () {
+        var salaryCap = 50000;
+
+        var players = [
+            {
+                "name": "player a",
+                "job": "position a",
+                "salary": 50
+            }, {
+                "name": "player b",
+                "job": "position b",
+                "salary": 50
+            }
+        ];
+
+        var positions = {
+            "first": ["position a", "position b"]
+        };
+
+        var results = makeTeams(players, salaryCap, positions);
+
+        var foundA = false, foundB = false;
+        results.forEach(function (result) {
+            if (result.first.name == "player a") {
+                foundA = true;
+                return;
+            }
+
+            if (result.first.name == "player b") {
+                foundB = true;
+                return;
+            }
+
+            fail("found invalid team", result);
+        });
+
+        if (!foundA) {
+            fail("could not find team with [playerA]");
+        }
+
+        if (!foundB) {
+            fail("could not find team with [playerB]")
+        }
+    });
 });
