@@ -1,12 +1,14 @@
 function makeTeams(players, salaryCap, positions){
-  if (!players) {
+  if (players.length == 0 || positions.length == 0) {
     return [];
-  }
+  } 
   return playerPositions(players, positions, salaryCap);
 }
 
 
 function playerPositions (players, positions, salaryCap) {
+  console.log("positions: ", positions)
+  console.log("players: ", players)
   var positionsGroups = {};
   var playerPositionsList = Object.keys(positions); //"first", "second"
   for (var i=0; i < playerPositionsList.length; i++) {
@@ -22,7 +24,6 @@ function playerPositions (players, positions, salaryCap) {
       positionsGroups[posName] = position;
     }
   }
-  // console.log("positionsGroups", positionsGroups) //["first": player]
   return createTeams(positionsGroups, salaryCap);
 };
 
@@ -34,6 +35,9 @@ function createTeams(positionsGroups, salaryCap) {
 
   function helper(dict, i) {
   var superPosition = keys[i];
+  console.log(groups[superPosition])  
+  console.log(groups[superPosition].length)
+
   for (var j=0, l=groups[superPosition].length; j<l; j++) {
       var a = {};
       Object.keys(dict).forEach(function(key) {
@@ -54,34 +58,26 @@ function createTeams(positionsGroups, salaryCap) {
 
 function checkSalaryAndDupes(teams, salaryCap) {
   var indices = [];
-  console.log("teams: ", teams)
   teamLoop:
   for (var i = 0; i < teams.length; i++) {
     var team = teams[i]
-    console.log("team: ", team)
+    var salarySum = 0;
     superPositions = Object.keys(team)
     playerLoop:
     for (var j = 0; j < superPositions.length; j++) {
       player = team[superPositions[j]]
-      console.log("player: ", player)
-      console.log("player salary: ", player.salary)
-      var salarySum = player.salary;
-      console.log("payer 1 salary: ", salarySum)
+      salarySum += player.salary;
       playerCheckLoop:
       for (var k = j+1; k < superPositions.length; k++) {
-        salarySum += team[superPositions[k]].salary;
-        console.log("player 2 salary: ", team[superPositions[k]].salary)
-        console.log("total salary: ", salarySum)
         if (player.name === team[superPositions[k]].name) {
-          indices.push(i);
-          break playerLoop;
-        } 
-        else if (salarySum > salaryCap) {
           indices.push(i);
           break playerLoop;
         }
       }
-      team.totalSalary = salarySum;
+    }
+    team.totalSalary = salarySum
+    if (team.totalSalary > salaryCap) {
+      indices.push(i);
     }
   }
   for (var s = indices.length - 1; s >= 0; s--) {
