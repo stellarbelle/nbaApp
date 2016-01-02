@@ -1,4 +1,12 @@
 describe("creating teams from players", function () {
+    function createPlayer(name, job, salary) {
+        return {
+            name: name,
+            job: job,
+            salary: salary
+        };
+    }
+
     it("doesn't fail when passed empty lists", function () {
         var results = makeTeams([], 50000, []);
         expect(results.length).toBe(0);
@@ -8,15 +16,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            {
-                "name": "player a",
-                "job": "position a",
-                "salary": 50
-            }, {
-                "name": "player b",
-                "job": "position b",
-                "salary": 10
-            }
+            createPlayer("player a", "position a", 50),
+            createPlayer("player b", "position b", 10)
         ];
 
         var positions = {
@@ -54,15 +55,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            {
-                "name": "player a",
-                "job": "position a",
-                "salary": 50
-            }, {
-                "name": "player b",
-                "job": "position b",
-                "salary": 60
-            }
+            createPlayer("player a", "position a", 50),
+            createPlayer("player b", "position b", 60)
         ];
 
         var positions = {
@@ -82,15 +76,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            {
-                "name": "player a",
-                "job": "position a",
-                "salary": 50
-            }, {
-                "name": "player b",
-                "job": "position b",
-                "salary": 50
-            }
+            createPlayer("player a", "position a", 50),
+            createPlayer("player b", "position b", 50)
         ];
 
         var positions = {
@@ -121,5 +108,42 @@ describe("creating teams from players", function () {
         if (!foundB) {
             fail("could not find team with [playerB]")
         }
+    });
+
+    it("removes duplicate players in different positions before returning", function () {
+        var players = [
+            createPlayer("player a", "position a", 50),
+            createPlayer("player b", "position a", 10)
+        ];
+
+        var positions = {
+            first: ["position a"],
+            second: ["position a"]
+        };
+
+        var results = makeTeams(players, 50000, positions);
+
+        var foundA = false;
+        results.forEach(function (team) {
+            if (team.first.name == "player a" &&
+                team.second.name == "player b") {
+                foundA = true;
+                return;
+            }
+
+            if (team.first.name == "player b" &&
+                team.second.name == "player a") {
+                foundA = true;
+                return;
+            }
+
+            fail("found invalid team", team);
+        });
+
+        if (!foundA) {
+            fail("Could not find [playerA, playerB]");
+        }
+
+        expect(results.length).toBe(1);
     });
 });
