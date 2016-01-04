@@ -1,12 +1,12 @@
 label {
 	margin-left: 15px;
 	font-size: 14px;
-},
+}
 
 #salary {
-	padding-left: 15px !important;
-},
-
-#positions select {
-	font-size: 14px !important;
+	margin-left: 15px;
 }
+/*
+.table {
+	width: 600px;
+}*/

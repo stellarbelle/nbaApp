@@ -25,7 +25,6 @@
       var factory = {};
 
       factory.createPlayer = function(player, callback) {
-        console.log(player);
         $http.post('/createPlayer', player).success(function(players) {
           callback(players);
         });
@@ -55,7 +54,6 @@
       };
 
       factory.updatePlayer = function(id, player, callback) {
-        console.log('update factory: ', player);
         $http.post('/updatePlayer/' + id, player).success(function(player) {
           callback(player);
         });
@@ -86,7 +84,6 @@
 
       $scope.createPlayer = function() {
         playerFactory.createPlayer($scope.player, function() {
-          console.log($scope.player);
           playerFactory.getPlayers(function(players) {
             $scope.players = players;
           });
@@ -119,13 +116,11 @@
 
       playerFactory.showPlayer($scope.playerId, function(player) {
         $scope.player = player;
-        console.log('show player: ', $scope.player);
 
       });
 
       $scope.updatePlayer = function() {
         playerFactory.updatePlayer($scope.playerId, $scope.player, function(player) {
-          console.log('update: ', $scope.player);
           $location.path('/players');
         });
       };
@@ -136,27 +131,20 @@
     nbaApp.controller('teamsController', function ($location, $scope, playerFactory) {
 
       $scope.players = [];
-      $scope.positions = {
-          "pointGuard": ["pointGuard"],
-          "shootingGuard": ["shootingGuard"],
-          "smallForward": ["smallForward"],
-          "powerForward": ["powerForward"],
+      var positions = {
+          "point guard": ["point guard"],
+          "shooting guard": ["shooting guard"],
+          "small forward": ["small forward"],
+          "power forward": ["power forward"],
           "center": ["center"],
-          "guard": ["pointGuard", "shootingGuard"],
-          "forward": ["smallForward", "powerForward"],
-          "utility": ["pointGuard", "shootingGuard", "smallForward", "powerForward", "center"]
+          "guard": ["point guard", "shooting guard"],
+          "forward": ["small forward", "power forward"],
+          "utility": ["point guard", "shooting guard", "small forward", "power forward", "center"]
       };
 
       playerFactory.getPlayers(function (players) {
         $scope.players = players;
-        $scope.teams = acceptedTeams(players, positions, 50000);
+        $scope.teams = makeTeams(players, 50000, positions);
       });
-        // var allPlayers = [pointGuard, shootingGuard];
-
-      /* (players, salaryCap, positions) */
-      /* [["point guard"], ["shooting guard"], ["small forward"], ["power forward"], ["center"],
-          ["point guard", "shooting guard"], ["small forward", "power forward"],
-          ["point guard", "shooting guard", "small forward", "power forward", "center"]] */
-
 
     });

@@ -1,11 +1,54 @@
 <div ng-controller="teamsController">
 	<h1>Here are your teams for today!</h1>
 	<br>
-	<div ng-repeat="team in teams">
-		<div ng-repeat="player in team">
-			<p>{{ player.name }}, {{ player.position }}, {{ player.salary }}</p>
-		</div>
+	<div ng-repeat="team in teams | orderBy: '-totalSalary'">
+		<h3> Team {{ $index + 1 }} </h3>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>
+						Position
+					</th>
+					<th>
+						Player Name
+					</th>
+					<th>
+						Player Position
+					</th>
+					<th>
+						Player Salary
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(id, player) in team" ng-if="id != 'totalSalary'">
+					<td>
+						{{ id }}
+					</td>
+					<td>
+						{{ player.name }}
+					</td>
+					<td>
+						{{ player.position }}
+					</td>
+					<td>
+						${{ player.salary }}
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td>
+					</td>
+					<td>
+						<strong>Total Salary:</strong>
+					</td>
+					<td>
+						<strong>${{ team.totalSalary }}</strong>
+					</td>
+				</tr>
+		  </tbody>
+	  </table>
 		<br>
 	</div>
 </div>
-
