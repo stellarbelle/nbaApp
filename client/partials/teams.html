@@ -5,7 +5,6 @@
 	<br>
 	<div ng-repeat="team in teams | orderBy: '-totalSalary'">
 		<h3> Team {{ $index + 1 }} </h3>
-		<p>{{ team.allPlayers }}</p>
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -21,7 +20,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="(id, player) in team" ng-if="id != 'totalSalary'">
+				<tr ng-repeat="(id, player) in team" ng-if="id != 'totalSalary' && id != 'allPlayers'">
 					<td>
 						{{ id }}
 					</td>

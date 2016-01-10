@@ -128,43 +128,8 @@
           });
         });
       };
-      // $scope.showPlayer = function(id) {
-      //   playerFactory.showPlayer(id, function(player) {
-      //     $scope.player = player
-      //   })
-      // }
 
     });
-
-    nbaApp.controller('editplayerController', function ($location, $scope, $routeParams, playerFactory) {
-
-      $scope.player = {
-        name: '',
-        position: '',
-        salary: ''
-      };
-      $scope.playerId = $routeParams._id;
-
-      $scope.positions = [];
-
-      playerFactory.getTodaysPlayers(function (todaysPlayers) {
-        $scope.todaysPlayers = todaysPlayers;
-        console.log(todaysPlayers)
-      });
-
-      playerFactory.showPlayer($scope.playerId, function(player) {
-        $scope.player = player;
-
-      });
-
-      $scope.updatePlayer = function() {
-        playerFactory.updatePlayer($scope.playerId, $scope.player, function(player) {
-          $location.path('/players');
-        });
-      };
-
-    });
-
 
     nbaApp.controller('teamsController', function ($location, $scope, playerFactory) {
 

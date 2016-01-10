@@ -52,7 +52,6 @@ function createTeams(positionsGroups, salaryCap) {
 }
 
 function checkSalaryAndDupes(teams, salaryCap) {
-  var indices = [];
   teamLoop:
   for (var i = teams.length-1; i >= 0; i--) {
     var team = teams[i];
