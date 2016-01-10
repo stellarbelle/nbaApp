@@ -1,8 +1,11 @@
 <div ng-controller="teamsController">
 	<h1>Here are your teams for today!</h1>
 	<br>
+	<h2>There are {{ teams.length }} total teams!</h2>
+	<br>
 	<div ng-repeat="team in teams | orderBy: '-totalSalary'">
 		<h3> Team {{ $index + 1 }} </h3>
+		<p>{{ team.allPlayers }}</p>
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -11,9 +14,6 @@
 					</th>
 					<th>
 						Player Name
-					</th>
-					<th>
-						Player Position
 					</th>
 					<th>
 						Player Salary
@@ -29,15 +29,10 @@
 						{{ player.name }}
 					</td>
 					<td>
-						{{ player.position }}
-					</td>
-					<td>
 						${{ player.salary }}
 					</td>
 				</tr>
 				<tr>
-					<td>
-					</td>
 					<td>
 					</td>
 					<td>

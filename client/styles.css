@@ -4,9 +4,30 @@ label {
 }
 
 #salary {
+	width: 200px;
 	margin-left: 15px;
 }
-/*
+
 .table {
 	width: 600px;
-}*/
+	margin-top: 50px;
+	position: relative;
+	display: inline;
+}
+
+#newPlayerForm {
+	border: 3px solid;
+	border-radius: 5px;
+	padding: 15px;
+	width: 250px;
+}
+
+#todaysPlayers {
+	display: inline-block;
+	border: 3px solid;
+	border-radius: 5px;
+	padding: 15px;
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+}

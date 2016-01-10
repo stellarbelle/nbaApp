@@ -15,6 +15,14 @@ module.exports = function(app) {
 		players.showPlayer(req, res);
 	}),
 
+	app.post('/addSalary/:id', function(req, res) {
+		players.addSalary(req, res);
+	}),
+
+	app.post('/removePlayer/:id', function(req, res) {
+		players.removePlayer(req, res);
+	}),
+
 	app.post('/updatePlayer/:id', function(req, res) {
 		players.updatePlayer(req, res);
 	});

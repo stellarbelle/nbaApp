@@ -54,29 +54,38 @@ function createTeams(positionsGroups, salaryCap) {
 function checkSalaryAndDupes(teams, salaryCap) {
   var indices = [];
   teamLoop:
-  for (var i = 0; i < teams.length; i++) {
+  for (var i = teams.length-1; i >= 0; i--) {
     var team = teams[i];
     var salarySum = 0;
+    var allPlayers = []
     var superPositions = Object.keys(team);
     playerLoop:
     for (var j = 0; j < superPositions.length; j++) {
       var player = team[superPositions[j]];
       salarySum += player.salary;
+      allPlayers.push(player.name);
       playerCheckLoop:
       for (var k = j+1; k < superPositions.length; k++) {
         if (player.name === team[superPositions[k]].name) {
-          indices.push(i);
+          teams.splice(i, 1);
           break playerLoop;
         }
       }
     }
     team.totalSalary = salarySum;
     if (team.totalSalary > salaryCap) {
-      indices.push(i);
+      teams.splice(i, 1);
+    } else {
+      allPlayers = allPlayers.sort();
+      team.allPlayers = allPlayers.toString();
     }
   }
-  for (var s = indices.length - 1; s >= 0; s--) {
-    teams.splice(indices[s], 1);
+  for (var l = 0; l < teams.length; l++) {
+    for (var m = teams.length - 1; m > l; m--) {
+      if (teams[l].allPlayers == teams[m].allPlayers) {
+        teams.splice(m, 1)
+      }
+    }
   }
   return teams;
 }
