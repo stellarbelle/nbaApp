@@ -57,6 +57,19 @@ module.exports = (function() {
 			);
 		},
 
+		deletePlayer: function(req, res) {
+			Player.remove(
+				{_id: req.params.id},
+				function(err, player) {
+					if(err) {
+						console.log(err); 
+					} else {
+						res.json(player);
+					}
+				}
+			);
+		},
+
 		createPlayer: function(req, res) {
 		var dt = new Date();
 		dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();

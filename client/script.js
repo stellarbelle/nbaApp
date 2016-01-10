@@ -63,6 +63,12 @@
         });
       };
 
+      factory.deletePlayer = function(id, callback) {
+        $http.post('/deletePlayer/' + id).success(function(players) {
+          callback(players);
+        });
+      };
+
       factory.getTodaysPlayers = function(callback) {
         $http.get('/showPlayers').success(function(data) {
           var dt = new Date();
@@ -123,6 +129,14 @@
 
       $scope.removePlayer = function(player) {
         playerFactory.removePlayer(player._id, function() {
+          playerFactory.getPlayers(function(players) {
+            $scope.players = players;
+          });
+        });
+      };
+
+      $scope.deletePlayer = function(player) {
+        playerFactory.deletePlayer(player._id, function() {
           playerFactory.getPlayers(function(players) {
             $scope.players = players;
           });

@@ -23,6 +23,10 @@ module.exports = function(app) {
 		players.removePlayer(req, res);
 	}),
 
+	app.post('/deletePlayer/:id', function(req, res) {
+		players.deletePlayer(req, res);
+	}),
+
 	app.post('/updatePlayer/:id', function(req, res) {
 		players.updatePlayer(req, res);
 	});
