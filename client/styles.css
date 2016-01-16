@@ -9,7 +9,7 @@ label {
 }
 
 .table {
-	width: 600px;
+	width: 700px;
 	margin-top: 50px;
 	position: relative;
 	display: inline;
@@ -23,6 +23,7 @@ label {
 }
 
 #todaysPlayers {
+	background-color: white;
 	display: inline-block;
 	border: 3px solid;
 	border-radius: 5px;

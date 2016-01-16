@@ -2,13 +2,11 @@
     <form>
       Player Name: <input type='text' ng-model='player.name' placeholder="{{ player.name }}">
       <br>
-      Player Position: 
+      Player Position:
       <select name="repeatSelect" id="repeatSelect" ng-model="player.position">
         	<option ng-repeat="position in positions" placeholder="{{ player.position }}" value="{{ position }}">{{ position }}</option>
       </select>
       <br>
-      Player Salary: <input type='number' ng-model='player.salary' placeholder="{{ player.salary }}">
-      <input type='submit' value='Update Player' ng-click='updatePlayer()'>
+      <input type='submit' value='Update Player' ng-click='editPlayer()'>
     </form>
 </div>
-

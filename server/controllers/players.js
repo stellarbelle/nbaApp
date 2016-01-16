@@ -9,47 +9,17 @@ module.exports = (function() {
 				if(err) {
 					console.log(err);
 				} else {
-					res.json(players)
+					res.json(players);
 				}
-			})
+			});
 		},
 
 		showPlayer: function(req, res) {
 			Player.findOne(
-				{_id: req.params.id}, 
+				{_id: req.params.id},
 				function(err, player) {
 					if(err) {
 						console.log(err);
-					} else {
-						res.json(player)
-					}
-				}
-			);
-		},
-
-		addSalary: function(req, res) {
-			var dt = new Date();
-			dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-			Player.update(
-				{_id: req.params.id},
-				{salary: req.body.salary, date: dt},
-				function(err, player) {
-					if(err) {
-						console.log(err); 
-					} else {
-						res.json(player);
-					}
-				}
-			);
-		},
-
-		removePlayer: function(req, res) {
-			Player.update(
-				{_id: req.params.id},
-				{date: "0000/00/00"},
-				function(err, player) {
-					if(err) {
-						console.log(err); 
 					} else {
 						res.json(player);
 					}
@@ -62,7 +32,7 @@ module.exports = (function() {
 				{_id: req.params.id},
 				function(err, player) {
 					if(err) {
-						console.log(err); 
+						console.log(err);
 					} else {
 						res.json(player);
 					}
@@ -71,28 +41,26 @@ module.exports = (function() {
 		},
 
 		createPlayer: function(req, res) {
-		var dt = new Date();
-		dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-		var player = new Player({name: req.body.name, position: req.body.position, salary: req.body.salary, date: dt});
+		var player = new Player({name: req.body.name, position: req.body.position, salary: req.body.salary});
 			player.save(function(err, player) {
 				if(err) {
-					console.log(err); 
+					console.log(err);
 				} else {
 					res.json(player);
 				}
-			})
+			});
 		},
 
 		updatePlayer: function(req, res) {
 			Player.update({_id: req.params.id},
-			 {name: req.body.name, position: req.body.position, salary: req.body.salary}, 
+			 {name: req.body.name, position: req.body.position},
 			 function(err, player) {
 				if(err) {
-					console.log(err); 
+					console.log(err);
 				} else {
 					res.json(player);
 				}
-			})
+			});
 		}
-	}
+	};
 })();

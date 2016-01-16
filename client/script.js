@@ -1,4 +1,4 @@
-    var nbaApp = angular.module('nbaApp', ['ngRoute']);
+    var nbaApp = angular.module('nbaApp', ['ngRoute', 'ngStorage']);
 
     nbaApp.config(function ($routeProvider) {
       $routeProvider
@@ -11,22 +11,29 @@
       .when('/teams',{
         templateUrl: 'partials/teams.html'
       })
+      .when('/edit/:id', {
+        templateUrl: 'partials/edit.html'
+      })
       .otherwise({
         redirectTo: '/players'
       });
     });
 
 
-    nbaApp.factory('playerFactory', function($http) {
+    nbaApp.factory('playerFactory', function($http, $localStorage, $sessionStorage) {
 
       var positions = ["point guard", "shooting guard", "center", "small forward",
                        "power forward"];
       var factory = {};
-      var todaysPlayers = [];
+      var storage = $localStorage.$default({
+        todaysPlayers: []
+      });
+      var todaysPlayers = storage.todaysPlayers;
 
       factory.createPlayer = function(player, callback) {
-        $http.post('/createPlayer', player).success(function(players) {
-          callback(players);
+        $http.post('/createPlayer', player).success(function(player) {
+          todaysPlayers[player._id] = player.salary;
+          callback(player);
         });
       };
 
@@ -36,7 +43,8 @@
 
       factory.getPlayers = function(callback) {
         $http.get('/showPlayers').success(function(players) {
-          callback(players);
+          callback(players, todaysPlayers);
+          console.log("todays players: ", todaysPlayers)
         });
       };
       factory.showPlayer = function(id, callback) {
@@ -52,34 +60,27 @@
       };
 
       factory.addSalary = function(id, player, callback) {
-        $http.post('/addSalary/' + id, player).success(function(players) {
-          callback(players);
-        });
+        todaysPlayers[id] = player.salary;
+        callback(id);
+      };
+
+      factory.clearPlayers = function(callback) {
+        storage.$reset();
+        callback();
       };
 
       factory.removePlayer = function(id, callback) {
-        $http.post('/removePlayer/' + id).success(function(players) {
-          callback(players);
-        });
+        for (var i = 0; i < todaysPlayers.length; i++) {
+          if (todaysPlayers[i]._id == id) {
+            var removedPlayer = todaysPlayers.splice(i, 1);
+              callback(removedPlayer[0], todaysPlayers);
+          }
+        }
       };
 
       factory.deletePlayer = function(id, callback) {
         $http.post('/deletePlayer/' + id).success(function(players) {
-          callback(players);
-        });
-      };
-
-      factory.getTodaysPlayers = function(callback) {
-        $http.get('/showPlayers').success(function(data) {
-          var dt = new Date();
-          dt = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-          for (var player in data) {
-            if (data[player].date === dt) {
-              todaysPlayers.push(data[player]);
-            }
-          }
-          callback(todaysPlayers);
-          todaysPlayers = [];
+          callback(id);
         });
       };
 
@@ -88,10 +89,13 @@
     });
 
 
-    nbaApp.controller('playersController', function ($scope, $routeParams, playerFactory) {
+    nbaApp.controller('playersController', function ($scope, $routeParams, $location, playerFactory, $localStorage, $sessionStorage) {
 
+      $scope.openPlayers = [];
+      $scope.selectedPlayers = [];
       $scope.players = [];
-      $scope.today = ""
+      $scope.opCount = 0;
+      $scope.spCount = 0;
       $scope.player = {
         name: '',
         position: '',
@@ -103,51 +107,89 @@
         $scope.positions = positions;
       });
 
-      playerFactory.getPlayers(function (players) {
-        var dt = new Date();
-        $scope.today = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
-        console.log($scope.today)
+      playerFactory.getPlayers(function (players, selectedPlayers) {
+        //players = combined data (Mongo + local)
+        $scope.todaysPlayers = selectedPlayers;
+        console.log(selectedPlayers);
+        $scope.openPlayers = [];
         $scope.players = players;
+
+        for (var playerIndex in players) {
+          var player = players[playerIndex];
+          if ($scope.todaysPlayers.hasOwnProperty(player._id)) {
+            $scope.selectedPlayers.push(player);
+          } else {
+            $scope.openPlayers.push(player);
+          }
+        }
+        $scope.opCount = $scope.openPlayers.length;
+        $scope.spCount = $scope.selectedPlayers.length;
       });
 
       $scope.createPlayer = function() {
-        playerFactory.createPlayer($scope.player, function() {
-          playerFactory.getPlayers(function(players) {
-            $scope.players = players;
-          });
+        playerFactory.createPlayer($scope.player, function(player) {
+          $scope.selectedPlayers.push(player);
           $scope.player = {};
+          $scope.opCount = $scope.openPlayers.length;
+          $scope.spCount = $scope.selectedPlayers.length;
         });
       };
 
       $scope.addSalary = function(player) {
-        playerFactory.addSalary(player._id, player, function() {
-          playerFactory.getPlayers(function(players) {
-            $scope.players = players;
-          });
+        //optimize later
+        playerFactory.addSalary(player._id, player, function(id) {
+          for (var i = 0; i < $scope.openPlayers.length; i++) {
+            if ($scope.openPlayers[i]._id === id) {
+              var player = $scope.openPlayers.splice(i, 1);
+              $scope.selectedPlayers.push(player[0]);
+            }
+          }
+          $scope.opCount = $scope.openPlayers.length;
+          $scope.spCount = $scope.selectedPlayers.length;
         });
       };
 
       $scope.removePlayer = function(player) {
-        playerFactory.removePlayer(player._id, function() {
+        playerFactory.removePlayer(player._id, function(removedPlayer, todaysPlayers) {
+          $scope.openPlayers.push(removedPlayer);
+          $scope.selectedPlayers = todaysPlayers;
+          $scope.opCount = $scope.openPlayers.length;
+          $scope.spCount = $scope.selectedPlayers.length;
+        });
+      };
+
+      $scope.clearPlayers = function() {
+        playerFactory.clearPlayers(function() {
           playerFactory.getPlayers(function(players) {
-            $scope.players = players;
+            $scope.openPlayers = players;
+            $scope.selectedPlayers = [];
+            $scope.opCount = $scope.openPlayers.length;
+            $scope.spCount = $scope.selectedPlayers.length;
           });
         });
       };
 
       $scope.deletePlayer = function(player) {
-        playerFactory.deletePlayer(player._id, function() {
-          playerFactory.getPlayers(function(players) {
-            $scope.players = players;
-          });
+        playerFactory.deletePlayer(player._id, function(id) {
+          for (var i = 0; i < $scope.openPlayers.length; i++) {
+            if ($scope.openPlayers[i]._id === id) {
+              $scope.openPlayers.splice(i, 1);
+            }
+          }
+          $scope.opCount = $scope.openPlayers.length;
+          $scope.spCount = $scope.selectedPlayers.length;
         });
+      };
+
+      $scope.editPlayer = function(id) {
+        $location.path('/edit/' + id);
       };
 
     });
 
     nbaApp.controller('teamsController', function ($location, $scope, playerFactory) {
 
-      $scope.players = [];
+      var selectedPlayers = [];
       var positions = {
           "point guard": ["point guard"],
           "shooting guard": ["shooting guard"],
@@ -159,9 +201,37 @@
           "utility": ["point guard", "shooting guard", "small forward", "power forward", "center"]
       };
 
-      playerFactory.getTodaysPlayers(function (players) {
-        $scope.players = players;
-        $scope.teams = makeTeams(players, 50000, positions);
+      playerFactory.getPlayers(function (players, todaysPlayers) {
+        console.log("team players: ", todaysPlayers);
+        for (var playerIndex in players) {
+          var player = players[playerIndex];
+          if (todaysPlayers.hasOwnProperty(player._id)) {
+            selectedPlayers.push(player);
+          }
+        }
+        console.log("team players: ", selectedPlayers)
+        $scope.teams = makeTeams(selectedPlayers, 50000, positions);
       });
+
+    });
+
+    nbaApp.controller('editplayerController', function ($scope, $routeParams, $location, playerFactory, $localStorage, $sessionStorage) {
+
+      $scope.positions = [];
+
+      playerFactory.getPositions(function (positions) {
+        $scope.positions = positions;
+      });
+
+      playerFactory.showPlayer($routeParams.id, function(player) {
+        console.log("params: ", $routeParams.id);
+        $scope.player = player;
+      });
+
+      $scope.editPlayer = function() {
+        playerFactory.updatePlayer($scope.player._id, $scope.player, function(player) {
+          $location.path('/players');
+        });
+      };
 
     });

@@ -31,6 +31,8 @@
 	    <input type='submit' value="Add Player" class="btn btn-primary" ng-click='createPlayer()'>
 	  </form>
   </div>
+  <br>
+  <h2>You have {{ opCount }} players to use!</h2>
   <table class="table table-fixedheader scroll">
   	<thead>
   	  <tr>
@@ -39,33 +41,35 @@
   	  	<th>Salary</th>
   	  </tr>
   	</thead>
-    <tbody ng-repeat="player in players">
+    <tbody ng-repeat="player in openPlayers | orderBy:'name'">
       <tr>
       	<td ng-bind='player.name'></td>
         <td ng-bind='player.position'></td>
-        <td ng-if="player.date != today">
-          <form>
+        <td>
+          <form id="salaryForm">
             $ <input type='number' ng-model='player.salary' placeholder="Amount">
             <input type='submit' class="btn btn-primary" value='Add Player' ng-click='addSalary(player)'>
           </form>
         </td>
-        <td ng-if="player.date == today">
-          ${{ player.salary }} 
+        <td>
+          <input type='submit' value='Delete' class="btn btn-danger" ng-click='deletePlayer(player)'>
         </td>
-        <td ng-if="player.date != today">
-          <input type='submit' value='Delete' class="btn btn-danger" ng-click='deletePlayer(player)'> 
+        <td>
+          <input type='submit' value='Edit' class="btn btn-warning" ng-click="editPlayer(player._id)">
         </td>
     	 </tr>
   	</tbody>
   </table>
   <div id="todaysPlayers">
     <h3>Today's Players</h3>
+    <h4>You have {{ spCount }} players on your team!</h4>
     <br>
-    <p ng-repeat="player in players" ng-if="player.date == today">
-      {{ player.name }}, ${{ player.salary }}
+    <p ng-repeat="player in selectedPlayers | orderBy:'name'">
+      {{ player.name }}, {{ player.position }}, ${{ player.salary }}
       <input type='submit' value='Remove' class="btn btn-xs btn-danger" ng-click='removePlayer(player)'>
     </p>
     <br>
+    <input type='submit' value='Clear All' class="btn btn-danger" ng-click='clearPlayers()'>
     <a href="#/teams" class="btn btn-primary">Create Teams</a>
   </div>
 </div>
