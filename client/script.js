@@ -61,7 +61,10 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
 
   factory.addSalary = function(id, player, callback) {
     todaysPlayers[id] = player.salary;
-    callback(id);
+    $http.post('/updateSalary/' + id, player).success(function() {
+      console.log("player: ", player)
+      callback(id);
+    });
   };
 
   factory.clearPlayers = function(callback) {

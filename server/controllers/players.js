@@ -61,6 +61,18 @@ module.exports = (function() {
 					res.json(player);
 				}
 			});
+		},
+
+		updateSalary: function(req, res) {
+			Player.update({_id: req.params.id},
+			 {salary: req.body.salary},
+			 function(err, player) {
+				if(err) {
+					console.log(err);
+				} else {
+					res.json(player);
+				}
+			});
 		}
 	};
 })();

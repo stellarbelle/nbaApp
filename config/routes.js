@@ -15,8 +15,8 @@ module.exports = function(app) {
 		players.showPlayer(req, res);
 	}),
 
-	app.post('/addSalary/:id', function(req, res) {
-		players.addSalary(req, res);
+	app.post('/updateSalary/:id', function(req, res) {
+		players.updateSalary(req, res);
 	}),
 
 	app.post('/removePlayer/:id', function(req, res) {
