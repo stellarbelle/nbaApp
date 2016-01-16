@@ -20,7 +20,7 @@ nbaApp.config(function ($routeProvider) {
 });
 
 
-nbaApp.factory('playerFactory', function($http, $localStorage, $sessionStorage) {
+nbaApp.factory('playerFactory', function($http, $localStorage) {
 
   var positions = ["point guard", "shooting guard", "center", "small forward",
                    "power forward"];
@@ -89,7 +89,7 @@ nbaApp.factory('playerFactory', function($http, $localStorage, $sessionStorage) 
 });
 
 
-nbaApp.controller('playersController', function ($scope, $routeParams, $location, playerFactory, $localStorage, $sessionStorage) {
+nbaApp.controller('playersController', function ($scope, $routeParams, $location, playerFactory) {
 
   $scope.openPlayers = [];
   $scope.selectedPlayers = [];
@@ -209,13 +209,13 @@ nbaApp.controller('teamsController', function ($location, $scope, playerFactory)
         selectedPlayers.push(player);
       }
     }
-    console.log("team players: ", selectedPlayers)
+    console.log("team players: ", selectedPlayers);
     $scope.teams = makeTeams(selectedPlayers, 50000, positions);
   });
 
 });
 
-nbaApp.controller('editplayerController', function ($scope, $routeParams, $location, playerFactory, $localStorage, $sessionStorage) {
+nbaApp.controller('editplayerController', function ($scope, $routeParams, $location, playerFactory) {
 
   $scope.positions = [];
 
