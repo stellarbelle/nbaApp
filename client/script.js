@@ -26,7 +26,7 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
                    "power forward"];
   var factory = {};
   var storage = $localStorage.$default({
-    todaysPlayers: []
+    todaysPlayers: {}
   });
   var todaysPlayers = storage.todaysPlayers;
 
