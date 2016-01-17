@@ -3,6 +3,8 @@
 	<br>
 	<h2>There are {{ teams.length }} total teams!</h2>
 	<br>
+	<a href="#/players" class="btn btn-danger">Back</a>
+	<br><br>
 	<div ng-repeat="team in teams | orderBy: '-totalSalary'">
 		<h3> Team {{ $index + 1 }} </h3>
 		<table class="table table-striped">
@@ -43,6 +45,10 @@
 				</tr>
 		  </tbody>
 	  </table>
+		<br>
+		<a onclick="scroll(0,0)" class="btn btn-warning">Back to Top</a>
+		<br>
+		<hr>
 		<br>
 	</div>
 </div>

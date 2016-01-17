@@ -44,7 +44,6 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
   factory.getPlayers = function(callback) {
     $http.get('/showPlayers').success(function(players) {
       callback(players, todaysPlayers);
-      console.log("todays players: ", todaysPlayers)
     });
   };
   factory.showPlayer = function(id, callback) {
@@ -62,7 +61,6 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
   factory.addSalary = function(id, player, callback) {
     todaysPlayers[id] = player.salary;
     $http.post('/updateSalary/' + id, player).success(function() {
-      console.log("player: ", player)
       callback(id);
     });
   };
@@ -73,12 +71,9 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
   };
 
   factory.removePlayer = function(id, callback) {
-    for (var i = 0; i < todaysPlayers.length; i++) {
-      if (todaysPlayers[i]._id == id) {
-        var removedPlayer = todaysPlayers.splice(i, 1);
-          callback(removedPlayer[0], todaysPlayers);
-      }
-    }
+    var salary = todaysPlayers[id];
+    delete todaysPlayers[id];
+    callback(salary, todaysPlayers);
   };
 
   factory.deletePlayer = function(id, callback) {
@@ -113,7 +108,6 @@ nbaApp.controller('playersController', function ($scope, $routeParams, $location
   playerFactory.getPlayers(function (players, selectedPlayers) {
     //players = combined data (Mongo + local)
     $scope.todaysPlayers = selectedPlayers;
-    console.log(selectedPlayers);
     $scope.openPlayers = [];
     $scope.players = players;
 
@@ -130,12 +124,14 @@ nbaApp.controller('playersController', function ($scope, $routeParams, $location
   });
 
   $scope.createPlayer = function() {
-    playerFactory.createPlayer($scope.player, function(player) {
-      $scope.selectedPlayers.push(player);
-      $scope.player = {};
-      $scope.opCount = $scope.openPlayers.length;
-      $scope.spCount = $scope.selectedPlayers.length;
-    });
+    if ($scope.player.name !== "" && $scope.player.position !== "" && $scope.player.salary !== "") {
+      playerFactory.createPlayer($scope.player, function(player) {
+        $scope.selectedPlayers.push(player);
+        $scope.player = {};
+        $scope.opCount = $scope.openPlayers.length;
+        $scope.spCount = $scope.selectedPlayers.length;
+      });
+    }
   };
 
   $scope.addSalary = function(player) {
@@ -152,10 +148,15 @@ nbaApp.controller('playersController', function ($scope, $routeParams, $location
     });
   };
 
-  $scope.removePlayer = function(player) {
-    playerFactory.removePlayer(player._id, function(removedPlayer, todaysPlayers) {
-      $scope.openPlayers.push(removedPlayer);
-      $scope.selectedPlayers = todaysPlayers;
+  $scope.removePlayer = function(removedPlayer) {
+    playerFactory.removePlayer(removedPlayer._id, function(salary, todaysPlayers) {
+      for (var playerIndex in $scope.selectedPlayers) {
+        var selectedPlayer = $scope.selectedPlayers[playerIndex];
+        if (selectedPlayer._id == removedPlayer._id) {
+          $scope.openPlayers.push(selectedPlayer);
+          $scope.selectedPlayers.splice(playerIndex, 1);
+        }
+      }
       $scope.opCount = $scope.openPlayers.length;
       $scope.spCount = $scope.selectedPlayers.length;
     });
@@ -205,14 +206,12 @@ nbaApp.controller('teamsController', function ($location, $scope, playerFactory)
   };
 
   playerFactory.getPlayers(function (players, todaysPlayers) {
-    console.log("team players: ", todaysPlayers);
     for (var playerIndex in players) {
       var player = players[playerIndex];
       if (todaysPlayers.hasOwnProperty(player._id)) {
         selectedPlayers.push(player);
       }
     }
-    console.log("team players: ", selectedPlayers);
     $scope.teams = makeTeams(selectedPlayers, 50000, positions);
   });
 
@@ -227,7 +226,6 @@ nbaApp.controller('editplayerController', function ($scope, $routeParams, $locat
   });
 
   playerFactory.showPlayer($routeParams.id, function(player) {
-    console.log("params: ", $routeParams.id);
     $scope.player = player;
   });
 

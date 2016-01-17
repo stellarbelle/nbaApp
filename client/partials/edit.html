@@ -1,12 +1,17 @@
 <div ng-controller="editplayerController">
+  <br>
+  <div id="newPlayerForm">
     <form>
-      Player Name: <input type='text' ng-model='player.name' placeholder="{{ player.name }}">
+      <h3>Edit Player</h3>
       <br>
+      Player Name: <input type='text' ng-model='player.name' placeholder="{{ player.name }}">
+      <br><br>
       Player Position:
       <select name="repeatSelect" id="repeatSelect" ng-model="player.position">
         	<option ng-repeat="position in positions" placeholder="{{ player.position }}" value="{{ position }}">{{ position }}</option>
       </select>
-      <br>
-      <input type='submit' value='Update Player' ng-click='editPlayer()'>
+      <br><br>
+      <input type='submit' value='Update Player' ng-click='editPlayer()' class="btn btn-primary">
     </form>
+  </div>
 </div>
