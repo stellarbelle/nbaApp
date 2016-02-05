@@ -32,3 +32,15 @@ label {
 	bottom: 30px;
 	right: 30px;
 }
+
+#min {
+	float: right;
+}
+
+#salaryMin {
+	display: flex;
+}
+
+#salaryMinInput {
+	width: 200px;
+}

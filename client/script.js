@@ -86,8 +86,26 @@ nbaApp.factory('playerFactory', function($http, $localStorage) {
 
 });
 
+nbaApp.factory('salaryFactory', function($localStorage) {
+  factory = {};
 
-nbaApp.controller('playersController', function ($scope, $routeParams, $location, playerFactory) {
+  var salStorage = $localStorage.$default({
+    salaryMin: 0
+  });
+
+  factory.setSalMin = function(min) {
+    salStorage.salaryMin = min;
+  }
+
+  factory.getSalMin = function() {
+    return salStorage.salaryMin;
+  }
+
+  return factory;
+});
+
+
+nbaApp.controller('playersController', function ($scope, $localStorage, $routeParams, $rootScope, $location, playerFactory, salaryFactory) {
 
   $scope.openPlayers = [];
   $scope.selectedPlayers = [];
@@ -189,9 +207,14 @@ nbaApp.controller('playersController', function ($scope, $routeParams, $location
     $location.path('/edit/' + id);
   };
 
+  $scope.createTeams = function() {
+    salaryFactory.setSalMin($scope.salaryMin);
+    $location.path('/teams');
+  };
+
 });
 
-nbaApp.controller('teamsController', function ($location, $scope, playerFactory) {
+nbaApp.controller('teamsController', function ($location, $rootScope, $localStorage, $scope, playerFactory, salaryFactory) {
 
   var selectedPlayers = [];
   var positions = {
@@ -212,7 +235,17 @@ nbaApp.controller('teamsController', function ($location, $scope, playerFactory)
         selectedPlayers.push(player);
       }
     }
-    $scope.teams = makeTeams(selectedPlayers, 50000, positions);
+    var teams = makeTeams(selectedPlayers, 50000, positions);
+    var salMin = salaryFactory.getSalMin();
+
+    var maxSalTeams = [];
+    for (var team in teams) {
+      if (teams[team].totalSalary > salMin) {
+        maxSalTeams.push(teams[team]);
+      }
+    }
+    $scope.teams = maxSalTeams;
+    console.log($scope.teams);
   });
 
 });

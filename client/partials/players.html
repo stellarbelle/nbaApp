@@ -16,7 +16,7 @@
         <br>
         <div id="positions" class="col-sm-4">
           <select required name="repeatSelect" id="repeatSelect" ng-model="player.position">
-            <option value=""></option>
+            <option value="" disabled="">Choose a Position</option>
             <option ng-repeat="position in positions" placeholder="utility" value="{{ position }}">{{ position }}</option>
           </select>
         </div>
@@ -69,7 +69,13 @@
       <input type='submit' value='Remove' class="btn btn-xs btn-danger" ng-click='removePlayer(player)'>
     </p>
     <br>
+    <form id="salaryMin">
+      <div id="salaryMinInput" class="input-group col-sm-2">
+        <div class="input-group-addon">$</div>
+        <input ng-model="salaryMin" type="number" class="form-control" placeholder="Salary Min" length="2" required="">
+      </div>
+    </form>
     <input type='submit' value='Clear All' class="btn btn-danger" ng-click='clearPlayers()'>
-    <a href="#/teams" class="btn btn-primary">Create Teams</a>
+    <input type="submit" class="btn btn-primary" value="Create Teams" ng-click=createTeams()>
   </div>
 </div>
