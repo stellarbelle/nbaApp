@@ -41,7 +41,7 @@ module.exports = (function() {
 		},
 
 		createPlayer: function(req, res) {
-		var player = new Player({name: req.body.name, position: req.body.position, salary: req.body.salary});
+		var player = new Player(req.body);
 			player.save(function(err, player) {
 				if(err) {
 					console.log(err);

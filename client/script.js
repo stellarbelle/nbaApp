@@ -157,9 +157,22 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
 
     for (var playerIndex in players) {
       var player = players[playerIndex];
+      var secPos;
+      if ($scope.player.position == "shooting guard") {
+        secPos = ["shooting guard", "guard", "utility"];
+      } else if ($scope.player.position == "point guard") {
+        secPos = ["point guard", "guard", "utility"];
+      } else if ($scope.player.position == "small forward") {
+        secPos = ["small forward", "forward", "utility"];
+      } else if ($scope.player.position == "power forward") {
+        secPos = ["power forward", "forward", "utility"];
+      } else {
+        secPos = ["center", "utility"];
+      }
       if ($scope.todaysPlayers.hasOwnProperty(player._id)) {
         $scope.selectedPlayers.push(player);
       } else {
+        player.secondaryPositionsOpts = secPos;
         $scope.openPlayers.push(player);
       }
     }
@@ -188,7 +201,7 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
                             salary: $scope.player.salary,
                             secondaryPositionsOpts: secPos,
                             secondaryPositions: []
-                          }
+                          };
       playerFactory.createPlayer(player_repack, function(player) {
         $scope.openPlayers.push(player);
         $scope.player = {};
