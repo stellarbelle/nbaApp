@@ -19,9 +19,29 @@ nbaApp.config(function ($routeProvider) {
   });
 });
 
-nbaApp.directive('myRepeatDirective', function() {
+nbaApp.directive('myMultiselectDirective', function() {
   return function(scope, element, attrs) {
-    $(element).find('.multiPos').multiselect();
+    var $option = $(element);
+    $option.text(scope.position);
+    $option.val(scope.position);
+
+    if (scope.$last) {
+      var $parent = $option.parent()
+      $parent.multiselect({
+        includeSelectAllOption: true,
+        selectAllNumber: false
+      });
+      $parent.multiselect('selectAll', false);
+      $parent.multiselect('updateButtonText');
+    }
+  }
+})
+
+nbaApp.directive('mySelectDirective', function() {
+  return function(scope, element, attrs) {
+    $(element).selectpicker({
+      size: 4
+    });
   }
 })
 
@@ -125,21 +145,6 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
   $scope.positions = [];
   $scope.salaryMin = salaryFactory.getSalMin()
 
-  // $scope.guardPos = function() {
-  //   console.log("guard")
-  //   $scope.secPositions = ['none', 'guard', 'utility']
-  // };
-  //
-  // $scope.forwardPos = function() {
-  //   console.log("forward")
-  //   $scope.secPositions = ['none', 'forward', 'utility']
-  // };
-  //
-  // $scope.centerPos = function() {
-  //   console.log("center")
-  //   $scope.secPositions = ['none', 'utility']
-  // };
-
   playerFactory.getPositions(function (positions) {
     $scope.positions = positions;
   });
@@ -165,21 +170,27 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
 
   $scope.createPlayer = function() {
     if ($scope.player.name !== "" && $scope.player.position !== "" && $scope.player.salary !== "") {
-      // if ($scope.player.position == "shooting guard" || $scope.player.position == "point guard") {
-      //   var secPos = ["none", "guard", "utility"];
-      // } else if ($scope.player.position == "small forward" || $scope.player.position == "power forward") {
-      //   var secPos = ["none", "forward", "utility"];
-      // } else {
-      //   var secPos = ["none", "utility"];
-      // }
+      var secPos;
+      if ($scope.player.position == "shooting guard") {
+        secPos = ["shooting guard", "guard", "utility"];
+      } else if ($scope.player.position == "point guard") {
+        secPos = ["point guard", "guard", "utility"];
+      } else if ($scope.player.position == "small forward") {
+        secPos = ["small forward", "forward", "utility"];
+      } else if ($scope.player.position == "power forward") {
+        secPos = ["power forward", "forward", "utility"];
+      } else {
+        secPos = ["center", "utility"];
+      }
       var player_repack = {
                             name: $scope.player.name,
                             position: $scope.player.position,
                             salary: $scope.player.salary,
-                            // secondaryPositions: secPos
+                            secondaryPositionsOpts: secPos,
+                            secondaryPositions: []
                           }
       playerFactory.createPlayer(player_repack, function(player) {
-        $scope.selectedPlayers.push(player);
+        $scope.openPlayers.push(player);
         $scope.player = {};
         $scope.opCount = $scope.openPlayers.length;
         $scope.spCount = $scope.selectedPlayers.length;
@@ -189,7 +200,6 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
 
   $scope.addSalary = function(player, secondaryPositions) {
     //optimize later
-    secondaryPositions.push(player.position)
     var player_repack = {
                           salary: player.salary,
                           secondaryPositions: secondaryPositions
