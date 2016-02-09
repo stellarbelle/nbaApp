@@ -4,7 +4,7 @@ var PlayerSchema = new mongoose.Schema({
 	name: String,
 	position: String,
 	salary: Number,
-	date: String
+	secondaryPositions: Array
 });
 
 mongoose.model('Player', PlayerSchema);

@@ -9,7 +9,7 @@ label {
 }
 
 .table {
-	width: 700px;
+	width: 900px;
 	margin-top: 50px;
 	position: relative;
 	display: inline;
@@ -43,4 +43,21 @@ label {
 
 #salaryMinInput {
 	width: 200px;
+}
+
+#salaryRow {
+	margin: 0;
+	width: 200px;
+}
+
+#playerDiv {
+	width: 200px;
+}
+
+#salaryForm {
+	margin: 0;
+}
+
+.table>tbody>tr>td {
+	padding-top: 20px;
 }

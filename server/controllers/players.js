@@ -65,7 +65,7 @@ module.exports = (function() {
 
 		updateSalary: function(req, res) {
 			Player.update({_id: req.params.id},
-			 {salary: req.body.salary},
+			 {salary: req.body.salary, secondaryPositions: req.body.secondaryPositions},
 			 function(err, player) {
 				if(err) {
 					console.log(err);

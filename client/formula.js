@@ -14,11 +14,12 @@ function playerPositions (players, positions, salaryCap) {
     var posArr = positions[posName];
     var position = [];
     for (var j=0; j < posArr.length; j++) {
-      for (var player in players) {
-        if (players[player].position == positions[playerPositionsList[i]][j]) {
-          position.push(players[player]);
+      for (var index in players) {
+        var player = players[index]
+        var player_positions = player.secondaryPositions
+        if (player_positions.indexOf(playerPositionsList[i]) != -1) {
+          position.push(player);
         }
-
       }
     positionsGroups[posName] = position;
     }

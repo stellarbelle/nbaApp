@@ -12,12 +12,12 @@
         </div>
       </div>
       <div class="form-group row">
-        <label>Player Position: </label>
+        <label>Main Position: </label>
         <br>
         <div id="positions" class="col-sm-4">
           <select required name="repeatSelect" id="repeatSelect" ng-model="player.position">
             <option value="" disabled="">Choose a Position</option>
-            <option ng-repeat="position in positions" placeholder="utility" value="{{ position }}">{{ position }}</option>
+            <option ng-repeat="position in positions" value="{{ position }}">{{ position }}</option>
           </select>
         </div>
       </div>
@@ -39,17 +39,37 @@
   	  	<th>Name</th>
   	  	<th>Position</th>
   	  	<th>Salary</th>
+        <th>Secondary Positions</th>
   	  </tr>
   	</thead>
-    <tbody ng-repeat="player in openPlayers | orderBy:'name'">
+    <tbody ng-repeat="player in openPlayers | orderBy:'name'" my-repeat-directive>
+      <div ng-if="player.position == 'point guard' || player.position == 'shooting guard'" ng-init="guard()"></div>
+      <div ng-if="player.position == 'power forward' || player.position == 'small forward'" ng-init="forward()"></div>
+      <div ng-if="player.position == 'center'" ng-init="center()"></div>
       <tr>
-      	<td ng-bind='player.name'></td>
+      	<td ng-bind='player.name' ></td>
         <td ng-bind='player.position'></td>
-        <td>
+        <td class="playerRow">
           <form id="salaryForm">
-            $ <input type='number' ng-model='player.salary' placeholder="Amount">
-            <input type='submit' class="btn btn-primary" value='Add Player' ng-click='addSalary(player)'>
+            <div id="playerDiv" class="input-group">
+              <div class="input-group-addon">$</div>
+              <input type='number' id="salaryRow" class="form-control" ng-model='player.salary' placeholder="Amount">
+            </div>
           </form>
+        </td>
+        <td class="dropdown-toggle" data-toggle="dropdown" ng-init>
+          <form>
+            <select required class="multiPos" multiple="multiple" ng-model="player.secondaryPos" >
+              <!-- <option ng-repeat="position in player.secondaryPositions" value="{{ position }}">{{ position }}</option> -->
+              <option value="none">none</option>
+              <option value="guard">guard</option>
+              <option value="forward">forward</option>
+              <option value="utility">utility</option>
+            </select>
+          </form>
+        </td>
+        <td>
+          <input type='submit' class="btn btn-primary" value='Add Player' ng-click='addSalary(player, player.secondaryPos)'>
         </td>
         <td>
           <input type='submit' value='Delete' class="btn btn-danger" ng-click='deletePlayer(player)'>
@@ -69,6 +89,7 @@
       <input type='submit' value='Remove' class="btn btn-xs btn-danger" ng-click='removePlayer(player)'>
     </p>
     <br>
+    Salary Minimum:
     <form id="salaryMin">
       <div id="salaryMinInput" class="input-group col-sm-2">
         <div class="input-group-addon">$</div>
