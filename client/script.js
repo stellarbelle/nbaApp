@@ -158,13 +158,13 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
     for (var playerIndex in players) {
       var player = players[playerIndex];
       var secPos;
-      if ($scope.player.position == "shooting guard") {
+      if (player.position == "shooting guard") {
         secPos = ["shooting guard", "guard", "utility"];
-      } else if ($scope.player.position == "point guard") {
+      } else if (player.position == "point guard") {
         secPos = ["point guard", "guard", "utility"];
-      } else if ($scope.player.position == "small forward") {
+      } else if (player.position == "small forward") {
         secPos = ["small forward", "forward", "utility"];
-      } else if ($scope.player.position == "power forward") {
+      } else if (player.position == "power forward") {
         secPos = ["power forward", "forward", "utility"];
       } else {
         secPos = ["center", "utility"];
