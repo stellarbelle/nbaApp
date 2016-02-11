@@ -17,7 +17,7 @@ function playerPositions (players, positions, salaryCap) {
       for (var index in players) {
         var player = players[index]
         var player_positions = player.secondaryPositions
-        if (player_positions.indexOf(playerPositionsList[i]) != -1) {
+        if (player_positions.indexOf(posArr[j]) != -1) {
           position.push(player);
         }
       }
