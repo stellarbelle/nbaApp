@@ -87,7 +87,6 @@ describe("creating teams from players", function () {
         };
 
         var results = makeTeams(players, salaryCap, positions);
-        console.log("results: ", results)
 
         var foundA = false, foundB = false;
         results.forEach(function (result) {
