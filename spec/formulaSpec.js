@@ -1,9 +1,10 @@
 describe("creating teams from players", function () {
-    function createPlayer(name, job, salary) {
+    function createPlayer(name, job, salary, secondaryPositions) {
         return {
             name: name,
             position: job,
-            salary: salary
+            salary: salary,
+            secondaryPositions: secondaryPositions
         };
     }
 
@@ -16,8 +17,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            createPlayer("player a", "position a", 50),
-            createPlayer("player b", "position b", 10)
+            createPlayer("player a", "position a", 50, ["position a"]),
+            createPlayer("player b", "position b", 10, ["position b"])
         ];
 
         var positions = {
@@ -39,7 +40,8 @@ describe("creating teams from players", function () {
             {
                 "name": "player a",
                 "position": "position a",
-                "salary": 50
+                "salary": 50,
+                "secondaryPositions": ["position a"]
             }
         ];
 
@@ -55,8 +57,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            createPlayer("player a", "position a", 50),
-            createPlayer("player b", "position b", 60)
+            createPlayer("player a", "position a", 50, ["position a"]),
+            createPlayer("player b", "position b", 60, ["position b"])
         ];
 
         var positions = {
@@ -76,8 +78,8 @@ describe("creating teams from players", function () {
         var salaryCap = 50000;
 
         var players = [
-            createPlayer("player a", "position a", 50),
-            createPlayer("player b", "position b", 50)
+            createPlayer("player a", "position a", 50, ["position a"]),
+            createPlayer("player b", "position b", 50, ["position b"])
         ];
 
         var positions = {
@@ -112,8 +114,8 @@ describe("creating teams from players", function () {
 
     it("removes duplicate players in different positions before returning", function () {
         var players = [
-            createPlayer("player a", "position a", 50),
-            createPlayer("player b", "position a", 10)
+            createPlayer("player a", "position a", 50, ["position a"]),
+            createPlayer("player b", "position a", 10, ["position a"])
         ];
 
         var positions = {
