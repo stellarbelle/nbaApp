@@ -164,4 +164,120 @@ describe("creating teams from players", function () {
 
         expect(results.length).toBe(0);
     });
+    it("only creates a single team when usable positions are limited", function () {
+        var salaryCap = 50000;
+
+        var smallForward = {
+            name: "Bojan Bogdanovic",
+            position: "small forward",
+            salary: 3900,
+            secondaryPositions: [
+                "small forward"
+            ]
+        };
+        var utility = {
+            name: "Chandler Parsons",
+            position: "small forward",
+            salary: 5300,
+            secondaryPositions: [
+                "utility"
+            ]
+        };
+        var guard = {
+            name: "Avery Bradley",
+            position: "shooting guard",
+            salary: 5500,
+            secondaryPositions: [
+                "guard"
+            ]
+        };
+        var forward = {
+            name: "Dirk Nowitzki",
+            position: "power forward",
+            salary: 6400,
+            secondaryPositions: [
+                "forward"
+            ]
+        };
+        var center = {
+            name: "Brook Lopez",
+            position: "center",
+            salary: 7500,
+            secondaryPositions: [
+                "center"
+            ]
+        };
+        var pointGuard = {
+            name: "Chris Lopez",
+            position: "point guard",
+            salary: 9700,
+            secondaryPositions: [
+                "point guard"
+            ]
+        };
+        var powerForward = {
+            name: "Amir Johnson",
+            position: "power forward",
+            salary: 5300,
+            secondaryPositions: [
+                "power forward"
+            ]
+        };
+        var shootingGuard = {
+            name: "Allen Crabbe",
+            position: "shooting guard",
+            salary: 4400,
+            secondaryPositions: [
+                "shooting guard"
+            ]
+        };
+
+        var players = [
+            smallForward,
+            utility,
+            guard,
+            forward,
+            center,
+            pointGuard,
+            powerForward,
+            shootingGuard
+        ];
+
+        // copied from script.js
+        var positions = {
+            "point guard": ["point guard"],
+            "shooting guard": ["shooting guard"],
+            "small forward": ["small forward"],
+            "power forward": ["power forward"],
+            "center": ["center"],
+            "guard": ["point guard", "shooting guard"],
+            "forward": ["small forward", "power forward"],
+            "utility": ["point guard", "shooting guard", "small forward", "power forward", "center"]
+        };
+
+        expect(Object.keys(positions).length).toBe(players.length);
+
+        var sum = 0;
+        players.forEach(function (player) {
+            sum += player.salary;
+        });
+        expect(sum).toBeLessThan(50000);
+
+        var results = makeTeams(players, 50000, positions);
+
+        if (results.length == 0) {
+            fail("expected a team to be created");
+        } else {
+            var team = results[0];
+
+            expect(team.pointGuard).toBe(pointGuard);
+            expect(team.shootingGuard).toBe(shootingGuard);
+            expect(team.smallForward).toBe(smallForward);
+            expect(team.powerForward).toBe(powerForward);
+            expect(team.center).toBe(center);
+            expect(team.guard).toBe(guard);
+            expect(team.forward).toBe(forward);
+            expect(team.utility).toBe(utility);
+        }
+    });
 });
