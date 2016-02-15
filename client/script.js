@@ -37,13 +37,13 @@ nbaApp.directive('myMultiselectDirective', function() {
   }
 })
 
-nbaApp.directive('mySelectDirective', function() {
-  return function(scope, element, attrs) {
-    $(element).selectpicker({
-      size: 4
-    });
-  }
-})
+// nbaApp.directive('mySelectDirective', function() {
+//   return function(scope, element, attrs) {
+//     $(element).selectpicker({
+//       size: 4
+//     });
+//   }
+// })
 
 nbaApp.factory('playerFactory', function($http, $localStorage) {
 
@@ -173,6 +173,7 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
         $scope.selectedPlayers.push(player);
       } else {
         player.secondaryPositionsOpts = secPos;
+        player.secondaryPositions = secPos
         $scope.openPlayers.push(player);
       }
     }
@@ -200,7 +201,7 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
                             position: $scope.player.position,
                             salary: $scope.player.salary,
                             secondaryPositionsOpts: secPos,
-                            secondaryPositions: []
+                            secondaryPositions: secPos
                           };
       playerFactory.createPlayer(player_repack, function(player) {
         $scope.openPlayers.push(player);
@@ -211,11 +212,11 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
     }
   };
 
-  $scope.addSalary = function(player, secondaryPositions) {
+  $scope.addSalary = function(player) {
     //optimize later
     var player_repack = {
                           salary: player.salary,
-                          secondaryPositions: secondaryPositions
+                          secondaryPositions: player.secondaryPositions
                         }
     playerFactory.addSalary(player._id, player_repack, function(id) {
       for (var i = 0; i < $scope.openPlayers.length; i++) {
@@ -234,6 +235,8 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
       for (var playerIndex in $scope.selectedPlayers) {
         var selectedPlayer = $scope.selectedPlayers[playerIndex];
         if (selectedPlayer._id == removedPlayer._id) {
+          var secPos = selectedPlayer.secondaryPositionsOpts
+          selectedPlayer.secondaryPositions = secPos
           $scope.openPlayers.push(selectedPlayer);
           $scope.selectedPlayers.splice(playerIndex, 1);
         }
@@ -244,8 +247,18 @@ nbaApp.controller('playersController', function ($scope, $localStorage, $routePa
   };
 
   $scope.clearPlayers = function() {
+    for (var index in $scope.selectedPlayers) {
+      var secPos = $scope.selectedPlayers[index].secondaryPositionsOpts;
+      $scope.selectedPlayers[index].secondaryPositions = secPos;
+      console.log("secpos:", secPos);
+      console.log("player pos: ", $scope.selectedPlayers[index].secondaryPositions);
+    }
     playerFactory.clearPlayers(function() {
       playerFactory.getPlayers(function(players) {
+        for (var index in players) {
+          var secPos = players[index].secondaryPositionsOpts;
+          players[index].secondaryPositions = secPos;
+        }
         $scope.openPlayers = players;
         $scope.selectedPlayers = [];
         $scope.opCount = $scope.openPlayers.length;

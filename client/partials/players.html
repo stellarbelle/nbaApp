@@ -15,13 +15,13 @@
         <label>Main Position: </label>
         <br>
         <div id="positions" class="col-sm-4">
-          <select required name="repeatSelect" class="selectpicker bs-docs-example" ng-model="player.position" my-select-directive>
+          <select name="repeatSelect" class="selectpicker bs-docs-example" ng-model="player.position" required="">
+            <option value="" disabled>Select Position</option>
             <option value="point guard">point guard</option>
             <option value="shooting guard">shooting guard</option>
             <option value="power forward">power forward</option>
             <option value="small forward">small forward</option>
             <option value="center">center</option>
-
           </select>
         </div>
       </div>
@@ -60,13 +60,13 @@
         </td>
         <td class="dropdown-toggle" data-toggle="dropdown" ng-init>
           <form>
-            <select required multiple="multiple" ng-model="player.secondaryPos" >
+            <select required multiple="multiple" ng-model="player.secondaryPositions" >
               <option ng-repeat="position in player.secondaryPositionsOpts" value="{{ position }}" my-multiselect-directive>{{ position }}</option>
             </select>
           </form>
         </td>
         <td>
-          <input type='submit' class="btn btn-primary" value='Add Player' ng-click='addSalary(player, player.secondaryPos)'>
+          <input type='submit' class="btn btn-primary" value='Add Player' ng-click='addSalary(player)'>
         </td>
         <td>
           <input type='submit' value='Delete' class="btn btn-danger" ng-click='deletePlayer(player)'>
@@ -82,7 +82,7 @@
     <h4>You have {{ spCount }} players on your team!</h4>
     <br>
     <p ng-repeat="player in selectedPlayers | orderBy:'name'">
-      {{ player.name }}, {{ player.position }}, ${{ player.salary }}
+      {{ player.name }}: (<span ng-repeat="position in player.secondaryPositions">{{ position }}{{$last ? '' : ', '}}</span>) ${{ player.salary }}
       <input type='submit' value='Remove' class="btn btn-xs btn-danger" ng-click='removePlayer(player)'>
     </p>
     <br>
