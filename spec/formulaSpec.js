@@ -148,4 +148,20 @@ describe("creating teams from players", function () {
 
         expect(results.length).toBe(1);
     });
+
+    it("uses player only if position from their positions array is in positions value array", function () {
+        var players = [
+            createPlayer("player a", "position a", 50, []),
+            createPlayer("player b", "position b", 10, [])
+        ];
+
+        var positions = {
+            first: ["position a", "position d"],
+            second: ["position b", "position c"]
+        };
+
+        var results = makeTeams(players, 50000, positions);
+
+        expect(results.length).toBe(0);
+    });
 });
