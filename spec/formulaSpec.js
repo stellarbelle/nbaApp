@@ -270,14 +270,14 @@ describe("creating teams from players", function () {
         } else {
             var team = results[0];
 
-            expect(team.pointGuard).toBe(pointGuard);
-            expect(team.shootingGuard).toBe(shootingGuard);
-            expect(team.smallForward).toBe(smallForward);
-            expect(team.powerForward).toBe(powerForward);
-            expect(team.center).toBe(center);
-            expect(team.guard).toBe(guard);
-            expect(team.forward).toBe(forward);
-            expect(team.utility).toBe(utility);
+            expect(team["point guard"]).toBe(pointGuard);
+            expect(team["shooting guard"]).toBe(shootingGuard);
+            expect(team["small forward"]).toBe(smallForward);
+            expect(team["power forward"]).toBe(powerForward);
+            expect(team["center"]).toBe(center);
+            expect(team["guard"]).toBe(guard);
+            expect(team["forward"]).toBe(forward);
+            expect(team["utility"]).toBe(utility);
         }
     });
 });
