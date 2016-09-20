@@ -31,6 +31,8 @@ label {
 	position: fixed;
 	top: 30px;
 	right: 30px;
+	overflow: scroll;
+	height: 500px
 }
 
 #min {
